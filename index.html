@@ -1,1 +1,149 @@
-# formul-rio-gabriel
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kathiely - Salão de Cachos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script:wght@400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="kathiely_logo.png" alt="Kathiely Salão de Cachos" class="logo">
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <h1 class="form-title">Agende seu Horário</h1>
+                <p class="form-subtitle">Transforme seus cachos com carinho e profissionalismo</p>
+                
+                <form id="appointmentForm" class="appointment-form">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nome Completo</label>
+                        <input type="text" id="name" name="name" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Telefone</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service" class="form-label">Serviço Desejado</label>
+                        <select id="service" name="service" class="form-select" required>
+                            <option value="">Selecione um serviço</option>
+                            <option value="corte">Corte para Cachos</option>
+                            <option value="hidratacao">Hidratação Profunda</option>
+                            <option value="finalizacao">Finalização de Cachos</option>
+                            <option value="tratamento">Tratamento Capilar</option>
+                            <option value="coloracao">Coloração</option>
+                            <option value="luzes">Luzes e Mechas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date" class="form-label">Data Preferida</label>
+                            <input type="date" id="date" name="date" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="time" class="form-label">Horário Preferido</label>
+                            <select id="time" name="time" class="form-select" required>
+                                <option value="">Selecione um horário</option>
+                                <option value="08:00">08:00</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hair-type" class="form-label">Tipo de Cabelo</label>
+                        <select id="hair-type" name="hair_type" class="form-select">
+                            <option value="">Selecione seu tipo de cacho</option>
+                            <option value="2a">2A - Ondulado Suave</option>
+                            <option value="2b">2B - Ondulado Médio</option>
+                            <option value="2c">2C - Ondulado Forte</option>
+                            <option value="3a">3A - Cacho Aberto</option>
+                            <option value="3b">3B - Cacho Médio</option>
+                            <option value="3c">3C - Cacho Fechado</option>
+                            <option value="4a">4A - Crespo Macio</option>
+                            <option value="4b">4B - Crespo Médio</option>
+                            <option value="4c">4C - Crespo Denso</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observations" class="form-label">Observações</label>
+                        <textarea id="observations" name="observations" class="form-textarea" rows="4" placeholder="Conte-nos sobre seu cabelo, alergias ou preferências especiais..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Agendar Horário</span>
+                        <span class="btn-icon">💕</span>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p class="footer-text">© 2025 Kathiely - Salão de Cachos. Feito com amor para seus cachos! 💖</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Simple validation
+            if (!data.name || !data.phone || !data.email || !data.service || !data.date || !data.time) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            try {
+                // Send data to backend
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Agendamento realizado com sucesso! Entraremos em contato em breve para confirmar. 💕');
+                    this.reset();
+                } else {
+                    alert('Erro ao realizar agendamento: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+            }
+        });
+
+        // Set minimum date to today
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
+
